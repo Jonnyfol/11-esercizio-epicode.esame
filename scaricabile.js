@@ -130,30 +130,32 @@ const jobs = [
 
 document.getElementById('searchButton').addEventListener('click', findResults); //chiamo gli elementi
 
-
+let searchResult = { result: [], count: 0 };
 //AGGIORNO CON IL TESTO AUTOMATICAMENTE (provo ad aggiungere questa opzione, così rendo "inutile" il tasto "cerca".
 // ovviamente commentanto dalla riga 140 alla 149 puoi notare che funziona, era solo per mettere qualcosa in più 
 //che potrebbe forse compensare una mia svista. grazie)
 
 
 
-document.getElementById('jobLocation').addEventListener('input', function() {
-  // Quando la posizione geografica viene modificata cerca
-  findResults();
-})
-   //Quando la posizione viene modificata cerca
-document.getElementById('jobTitle').addEventListener('input', function() {
-  findResults();
-});
-//pulsante reset
-document.getElementById('resetButton').addEventListener('click', resetResults);
+// document.getElementById('jobLocation').addEventListener('input', function() {
+//   // Quando la posizione geografica viene modificata cerca
+//   findResults();
+// })
+//    //Quando la posizione viene modificata cerca
+// document.getElementById('jobTitle').addEventListener('input', function() {
+//   findResults();
+// });
+// //pulsante reset
+// document.getElementById('resetButton').addEventListener('click', resetResults);
 
 //FINE AGGIORNAMENTO TESTO AUTOMATICO
 
 // Azzera il contenuto
 function resetResults() {
   let resultsContainer = document.getElementById('resultsContainer');
+  
   resultsContainer.innerHTML = ''; 
+
 }
      
 function searchJobs(jobs, title, location) {
@@ -185,20 +187,25 @@ function searchJobs(jobs, title, location) {
 function findResults() {
   let jobTitleInput = document.getElementById('jobTitle');
   let jobLocationInput = document.getElementById('jobLocation');
+  let countText = document.getElementById('countText');
   let resultsContainer = document.getElementById('resultsContainer');
+ 
+
   document.getElementById('resetButton').addEventListener('click', resetResults);
 
   // recupero il value dell'input
   let jobTitle = jobTitleInput.value;
   let jobLocation = jobLocationInput.value;
+  
 
   // Verifica se almeno uno dei due campi è compilato
   if (jobTitle || jobLocation) {
-    // Chiamiamo la funzione searchJobs solo se almeno uno dei due campi è compilato
+    // Chiamiamo la funzione searchResult solo se almeno uno dei due campi è compilato
     let searchResult = searchJobs(jobs, jobTitle, jobLocation);
 
     // Mostrare i risultati sulla pagina
     resultsContainer.innerHTML = ''; // Pulisce i risultati precedenti
+    
 
     if (searchResult.count > 0) {
       // Mostra i risultati usando una lista (ul)
@@ -212,17 +219,42 @@ function findResults() {
         ul.appendChild(li);
       }
 
+     
       // Se non trovo nulla
+      
       resultsContainer.appendChild(ul);
       }
+
 
       if (searchResult.result.length === 0) {
         resultsContainer.textContent = 'Nessun risultato';
       resultsContainer.appendChild(ul);
     }
+    
+    countText.textContent = 'Risultati trovati: ' + searchResult.count;
+
+   
   } else {
     // Nessun campo compilato
     resultsContainer.textContent = 'immetti almeno un campo';
   }
   resultsContainer.appendChild(ul);
 }
+
+function resetResults() {
+  let resultsContainer = document.getElementById('resultsContainer');
+  let countText = document.getElementById('countText'); // Riferimento al paragrafo del conteggio
+  let jobTitleInput = document.getElementById('jobTitle');
+  let jobLocationInput = document.getElementById('jobLocation');
+  
+  resultsContainer.innerHTML = ''; // Azzera il contenuto degli elementi risultati
+
+  // Reimposta il conteggio a 0
+  searchResult.count = 0;
+
+  // Aggiorna il testo del conteggio
+  countText.textContent = 'Risultati trovati: 0';
+  jobTitleInput.value = '';
+  jobLocationInput.value = '';
+}
+
